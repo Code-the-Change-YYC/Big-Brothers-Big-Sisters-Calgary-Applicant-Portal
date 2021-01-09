@@ -43,14 +43,6 @@
           {{item.waitingApproval}}
         </v-icon>
       </template>
-      <!-- <template v-slot:item.actions="{ item }">
-      <v-icon
-        medium
-        @click="deleteUser(item)"
-      >
-        mdi-delete
-      </v-icon>
-    </template> -->
     </v-data-table>
     <v-divider></v-divider>
     <v-pagination
@@ -112,11 +104,6 @@
             sortable: true,
             value: 'waitingApproval' 
           },
-          {
-            text: 'Delete User',
-            sortable: false,
-            value: 'actions',
-          }
         ],
         users: [],
         page: 1,
