@@ -180,17 +180,14 @@ function sendNotificationByID(id, notification) {
  */
 exports.deleteUserByID = functions.https.onCall((data, context) => {
   if (!context.auth.uid) { throw new functions.https.HttpsError("unauthenticated", "User not authenticated"); }
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let id = data.id;
-    db.collection('users').doc(id).delete()
-      .then((id) => {
-
-        try {
-          admin.auth().deleteUser(id);
-          resolve();
-        } catch (err) {
-          reject(new functions.https.HttpsError("internal", "Unable to delete user auth"));
-        }
-      }).catch(() => reject(new functions.https.HttpsError("internal", "Could not delete document")));
+    try {
+      await db.collection('users').doc(id).delete();
+      admin.auth().deleteUser(id);
+      resolve();
+    } catch (error) {
+      reject(new functions.https.HttpsError("internal", "Unable to delete user"));
+    }
   });
 });
