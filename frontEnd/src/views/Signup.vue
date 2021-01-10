@@ -150,7 +150,6 @@ export default {
           this.errormessage = err.message;
         }
       },
-
       signUp(){
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then((user) => {

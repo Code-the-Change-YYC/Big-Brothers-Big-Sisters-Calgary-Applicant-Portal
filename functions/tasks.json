@@ -113,7 +113,7 @@
   },
   {
     "name": "You are a BIG Deal!",
-    "dueDate": "Prior to interview",
+    "dueDate": "Wait for admin approval",
     "isApproved": false,
     "isSubmitted": false,
     "fileUpload": null

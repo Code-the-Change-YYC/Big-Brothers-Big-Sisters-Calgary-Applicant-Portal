@@ -133,7 +133,7 @@
           let user = this.users[i];
           let completedCount = 0;
           let awaitingApproval = false;
-          
+          let taskReduction = 0
           for (let j = 0; j < user["tasks"].length; j++) {
             let activity = user["tasks"][j]
             if (activity["isApproved"] === true) {
@@ -143,7 +143,11 @@
               awaitingApproval = true;
             }
           }
-          user.status = completedCount === user["tasks"].length ? "Completed" : (completedCount + "/" + user["tasks"].length + " completed");
+          //if the user is an in school mentor
+          if(!user.isCommunityMentor){
+            taskReduction = 2;
+          }
+          user.status = completedCount >= (user["tasks"].length - taskReduction) ? "Completed" : (completedCount + "/" + (user["tasks"].length - taskReduction) + " completed");
           user.waitingApproval = awaitingApproval ? "mdi-alert": "mdi-check-circle";
         }
         return this.users;

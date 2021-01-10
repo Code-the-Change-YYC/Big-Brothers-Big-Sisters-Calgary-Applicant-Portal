@@ -82,7 +82,7 @@
                 <v-btn
                   color="accent"
                   margin-bottom="1em"
-                  @click="auth('abc.123@a.com', 'Abc1234$')"
+                  @click="auth('final@test.com', 'Abc1234$')"
                 >
                   BYPASS AUTH AS APPLICANT (DEBUG ONLY)
                 </v-btn>
