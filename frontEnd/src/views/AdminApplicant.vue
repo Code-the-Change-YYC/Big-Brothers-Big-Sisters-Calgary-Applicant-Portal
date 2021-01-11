@@ -18,18 +18,24 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
+          <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
             <v-btn
             class="ma-2"
             dark
             color="accent"
+            v-bind="attrs"
+            v-on="on"
             :href="`mailto:${applicantEmail}`"
             > 
               <v-icon large color="white">
                 mdi-email
               </v-icon>
             </v-btn>
+            </template>
+            <span>{{applicantEmail}}</span>
+            </v-tooltip>
             <v-card-title>{{ applicantName }}</v-card-title>
-
             <v-spacer></v-spacer>
             <v-switch
               class="mt-6"
@@ -246,6 +252,7 @@ export default {
       this.displayNotification(err.message);
     }
     this.applicantName = doc.data.name;
+    this.applicantEmail = doc.data.email;
     this.isCommunityMentor = doc.data.isCommunityMentor;
     let servertasks = doc.data.tasks;
     this.tasks = [];
