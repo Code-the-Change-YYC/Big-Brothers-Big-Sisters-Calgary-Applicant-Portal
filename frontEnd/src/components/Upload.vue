@@ -1,19 +1,14 @@
 <template>
   <div>
     <v-file-input
-      color="accent" 
-      label="Upload a file"
-      accept="application/pdf"
+      color="accent"
+      label="Upload PDF"
+      accept="*/*"
       v-model="fileData"
-      @change="onUpload"
     >
     </v-file-input>
-    <div>
-      <p>
-        Progress: {{ uploadValue.toFixed() + "%" }}
-        <progress id="progress" :value="uploadValue" max="100"></progress>
-      </p>
-    </div>
+    <v-btn color="accent darken-1" text @click="resetFile"> Cancel </v-btn>
+    <v-btn color="accent darken-1" text @click="saveFile"> Save </v-btn>
   </div>
 </template>
 
@@ -25,39 +20,32 @@ export default {
   data() {
     return {
       fileData: null,
-      file: null,
-      uploadValue: 0,
+      downloadUrl: null,
     };
   },
   props: {
     task: Object,
   },
   methods: {
-    onUpload() {
-      this.file = null;
-      //adds to a folder based on the users ID
-      const storageRef = firebase.storage().ref(this.$route.params.applicantID + "/" + `${this.fileData.name}`).put(this.fileData);
-      storageRef.on(
-        `state_changed`,
-        (snapshot) => {
-          this.uploadValue =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          this.uploadValue = 100;
-          storageRef.snapshot.ref.getDownloadURL().then((url) => {
-            this.file = url;
-          });
-          this.$emit(
-            "Uploaded",
-            this.$route.params.applicantID + "/" + `${this.fileData.name}`
-          );
-        }
-      );
+    async saveFile() {
+      if (this.fileData == null) {
+        this.$emit("upload-error", "Must select a PDF to upload.");
+        return;
+      }
+      try {
+        let snapshot = await firebase
+          .storage()
+          .ref(this.$route.params.applicantID + "/" + `${this.task.name}`)
+          .put(this.fileData);
+        this.task.fileUpload = await snapshot.ref.getDownloadURL();
+        this.$emit("uploaded", this.task);
+      } catch (error) {
+        this.$emit("upload-error", error.message);
+      }
     },
-  }
+    resetFile() {
+      this.fileData = null;
+    },
+  },
 };
 </script>

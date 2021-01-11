@@ -25,6 +25,8 @@
       :items-per-page="10"
       :page.sync="page"
       @click:row="goToApplicantView"
+      loading
+      loading-text="Loading... Please wait"
     >
       <template v-slot:item.name="{item}">
         <td>{{item.name}}</td>

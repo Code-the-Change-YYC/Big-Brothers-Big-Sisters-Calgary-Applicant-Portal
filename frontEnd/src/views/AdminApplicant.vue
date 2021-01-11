@@ -15,6 +15,8 @@
         class="elevation-1"
         :hide-default-footer="true"
         disable-pagination
+        loading
+        loading-text="Loading... Please wait"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -87,13 +89,11 @@
           </v-chip>
         </template>
         <template v-slot:item.upload="{ item }">
-          <v-icon v-if="!item.fileUpload" color="accent">
-            {{ downloadIcons.noUpload }}</v-icon
-          >
           <bbbs-download
             v-if="item.fileUpload"
             :task="item"
             class="ml-n5"
+            :isAdminView="true"
           ></bbbs-download>
         </template>
         <template v-slot:item.buttonTitle="{ item }">
@@ -147,17 +147,11 @@ export default {
       applicantName: "",
       tasks: [],
       tasksToRender: [],
-      selectedIndex: "",
       switchLoading: false,
       notif: "",
       snackbar: false,
       isCommunityMentor: false,
       educationExcludeTaskNameList:["BIG Extras - Car Insurance", "BIG Extras - Home Assessment"],
-      downloadIcons: {
-        noUpload: "mdi-download-off-outline",
-        upload: "mdi-cloud-download",
-        uploadComplete: "mdi-cloud-check",
-      },
       Headers: [
         {
           text: "Task Name",
@@ -177,7 +171,7 @@ export default {
           value: "status",
         },
         {
-          text: "Download",
+          text: "",
           align: "start",
           sortable: false,
           value: "upload",

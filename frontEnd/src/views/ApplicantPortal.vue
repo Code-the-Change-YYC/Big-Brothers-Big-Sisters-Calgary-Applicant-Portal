@@ -17,6 +17,8 @@
         disable-pagination
         item-key="name"
         class="elevation-1"
+        loading
+        loading-text="Loading... Please wait"
       >
         <v-divider></v-divider>
         <template v-slot:top>
@@ -25,9 +27,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
         </template>
-        <template 
-        v-slot:expanded-item="{ headers, item }"
-        >
+        <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
             <p class="float-left mt-7" style="width: 40%; text-align: left">
               {{ item.description }}
@@ -44,15 +44,23 @@
               {{ buttonTitle(item.status) }}
             </v-btn>
             <bbbs-upload
-              v-if="item.upload && !item.fileUpload"
+              v-if="
+                item.upload && !item.fileUpload && item.status !== 'Complete'
+              "
               class="float-right mt-1 mr-5"
-              @Uploaded="handleUpload"
+              @uploaded="handleFile"
+              @upload-error="displayNotification"
+              :task="item"
             ></bbbs-upload>
             <bbbs-download
-              v-if="item.upload && item.fileUpload"
-              :task="item"
-              buttonText="Offense Declaration"
+              v-if="
+                item.upload && item.fileUpload && item.status !== 'Complete'
+              "
               class="float-right mt-5 mr-5"
+              :applicantID="id"
+              :task="item"
+              @deleted="handleFile"
+              @delete-error="displayNotification"
             ></bbbs-download>
           </td>
         </template>
@@ -67,11 +75,6 @@
         <template v-slot:item.dueDate="{ item }">
           {{ item.dueDate }}
         </template>
-        <template v-slot:item.upload="{ item }">
-          <v-icon color="accent">
-            {{ item.upload ? uploadIcons.upload : uploadIcons.noUpload }}
-          </v-icon>
-        </template>
       </v-data-table>
       <bbbs-footer></bbbs-footer>
     </v-card>
@@ -83,44 +86,32 @@
         </v-btn>
       </template>
     </v-snackbar>
-      <v-dialog
-              v-model="accepted"
-              persistent
-              max-width="290"
-              >
-                <v-card>
-                  <v-card-title class="justify-center"
-                  >
-                    Congratulations {{this.username}}!
-                  </v-card-title>
-                  <v-card-text> You are now ready to be matched!</v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="accent"
-                      text
-                      @click="accepted = false"
-                      >
-                      Close
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-        </v-dialog>
+    <v-dialog v-model="accepted" persistent max-width="290">
+      <v-card>
+        <v-card-title class="justify-center">
+          Congratulations {{ this.username }}!
+        </v-card-title>
+        <v-card-text> You are now ready to be matched!</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="accent" text @click="accepted = false"> Close </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import Vue from 'vue'
+import Vue from "vue";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import Upload from "../components/Upload.vue";
 import Download from "../components/Download.vue";
 import Carousel from "../components/Carousel.vue";
 import firebase from "firebase";
-import { updateTask } from "../services/apiServices";
-import VueConfetti from 'vue-confetti'
+import VueConfetti from "vue-confetti";
 
-Vue.use(VueConfetti)
+Vue.use(VueConfetti);
 
 export default {
   data() {
@@ -131,7 +122,10 @@ export default {
       tasksToRender: [],
       expanded: [],
       singleExpand: false,
-      educationExcludeTaskNameList:["BIG Extras - Car Insurance", "BIG Extras - Home Assessment"],
+      educationExcludeTaskNameList: [
+        "BIG Extras - Car Insurance",
+        "BIG Extras - Home Assessment",
+      ],
       Headers: [
         {
           text: "Name",
@@ -150,12 +144,6 @@ export default {
           align: "start",
           sortable: false,
           value: "dueDate",
-        },
-        {
-          text: "Upload",
-          align: "middle",
-          sortable: false,
-          value: "upload",
         },
         {
           text: "",
@@ -179,11 +167,6 @@ export default {
           icon: "mdi-alert",
         },
       },
-      uploadIcons: {
-        noUpload: "mdi-cloud-off-outline",
-        upload: "mdi-cloud-upload",
-        uploadComplete: "mdi-cloud-check",
-      },
       requiresHomeAssessment: false,
       isCommunityMentor: false,
       noActions: [
@@ -205,31 +188,42 @@ export default {
     carousel: Carousel,
   },
   methods: {
-    //function for updating the users filepath in the upload
-    handleUpload(filePath) {
+    //function for updating the users filepath in the upload and delete
+    async handleFile(selectedTask) {
       //now update users filepath
-      console.log("path: " + filePath);
-      //hard coded for now
-      let selectedTask = this.tasks[13];
       let serverTasks = [];
       this.tasks.forEach((task) => {
         let serverTask = {
           dueDate: task.dueDate,
           name: task.name,
           isApproved: task.isApproved,
-          isSubmitted: task.isSubmitted, //don't change the submitted value when updating files
+          isSubmitted: task.isSubmitted,
         };
         //change the selected tasks filepath
         if (task.name === selectedTask.name) {
-          serverTask.fileUpload = filePath;
-          task.fileUpload = filePath;
+          serverTask.fileUpload = selectedTask.fileUpload;
+          task.fileUpload = selectedTask.fileUpload;
         } else {
           serverTask.fileUpload = task.fileUpload;
         }
         serverTasks.push(serverTask);
       });
-      let notification = `${this.username} has uploaded a file to ${selectedTask.name}`;
-      updateTask(this.id, serverTasks, notification);
+      let notification;
+      if (selectedTask.fileUpload != null) {
+        notification = `${this.username} has uploaded a file for ${selectedTask.name}`;
+      } else {
+        notification = `${this.username} has deleted their uploaded file for ${selectedTask.name}`;
+      }
+      try {
+        this.displayNotification(notification);
+        await firebase.functions().httpsCallable("updateTasks")({
+          id: this.id,
+          serverTasks,
+          notification,
+        });
+      } catch (err) {
+        this.displayNotification(err.message);
+      }
     },
     async changeStatus(task) {
       let selectedTask = task;
@@ -252,7 +246,7 @@ export default {
           dueDate: task.dueDate,
           name: task.name,
           isApproved: task.isApproved,
-          fileUpload: task.fileUpload, 
+          fileUpload: task.fileUpload,
         };
         if (task.name === selectedTask.name) {
           serverTask.isSubmitted = selectedTask.isSubmitted;
@@ -266,10 +260,12 @@ export default {
           isAdmin: false,
           id: this.id,
           serverTasks,
-          notification
+          notification,
         });
       } catch (err) {
-        this.displayNotification(err.message);      }    },
+        this.displayNotification(err.message);
+      }
+    },
     buttonTitle: function (status) {
       return status === "InProgress" ? "Mark Incomplete" : "Request Approval";
     },
@@ -314,49 +310,46 @@ export default {
         clientTask.upload = defaults[serverTask.name].upload;
         //checks the user type and only pushes tasks applicable to that user
 
-        if(this.educationExcludeTaskNameList.includes(clientTask.name)){
-          if(this.isCommunityMentor){
+        if (this.educationExcludeTaskNameList.includes(clientTask.name)) {
+          if (this.isCommunityMentor) {
             this.tasksToRender.push(clientTask);
           }
         } else {
-            this.tasksToRender.push(clientTask);
+          this.tasksToRender.push(clientTask);
         }
         this.tasks.push(clientTask);
       }
       this.isComplete();
     },
     //checks if all tasks are complete for that user
-    isComplete(){
+    isComplete() {
       let iscomplete = true;
-      this.tasksToRender.forEach((task) =>{
+      this.tasksToRender.forEach((task) => {
         iscomplete = iscomplete && task.isApproved;
-      })
+      });
       this.accepted = iscomplete;
-      this.$confetti.stop()
-      if(this.accepted){
+      this.$confetti.stop();
+      if (this.accepted) {
         this.$confetti.start({
           particles: [
             {
-              type: 'circle',
-              colors: [
-                'gold',
-                'lightBlue'
-              ]
-            }
-            ],
-            particlesPerFrame: 0.5,
-            defaultDropRate: 10,
-            defaultSize: 7
-        })
+              type: "circle",
+              colors: ["gold", "lightBlue"],
+            },
+          ],
+          particlesPerFrame: 0.5,
+          defaultDropRate: 10,
+          defaultSize: 7,
+        });
       }
       return;
     },
   },
   created() {
-    this.renderUser(); 
+    this.renderUser();
   },
-  destroyed(){
-    this.$confetti.stop()
+  destroyed() {
+    this.$confetti.stop();
   },
 };
 </script>

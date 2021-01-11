@@ -128,6 +128,27 @@ exports.updateTasks = functions.https.onCall((data, context) => {
   });
 });
 
+
+// export async function updateResources(name, link, isFile = false) {
+//   db.collection('resources').doc(name).set({
+//     name,
+//     link,
+//     isFile,
+//     date: new Date().toLocaleDateString("en-ca")
+//   }).catch((error) => {
+//     throw error;
+//   });
+// }
+
+
+
+// export async function uploadFile(name, data) {
+//   return await firebase
+//     .storage()
+//     .ref(name)
+//     .put(data);
+// }
+
 /**
  * Produces a list of document snapshots containing admins
  */

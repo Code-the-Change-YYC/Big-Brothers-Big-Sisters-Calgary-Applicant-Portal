@@ -1,49 +1,59 @@
 <template>
-  <a target="_blank" rel="noreferrer noopener" :href="downloadLink" download="report.pdf">
-    <v-btn 
-    rounded
-    color="accent"> 
-      <v-icon v-if="buttonText === ''">
-        mdi-download
-      </v-icon>
-      <v-icon v-else left>
-        mdi-download
-      </v-icon>
-      {{ buttonText }}
-      </v-btn>
-  </a>
+  <div>
+    <v-btn
+      target="_blank"
+      :href="task.fileUpload"
+      icon
+      rel="noreferrer noopener"
+      download="Offence Declaration.pdf"
+      color="accent"
+    >
+      <v-icon>mdi-download</v-icon>
+    </v-btn>
+    <v-btn v-if="!isAdminView" color="accent darken-1" text @click="deleteFile"> Delete </v-btn>
+  </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import "firebase/firestore";
 
 export default {
-  name: "upload",
-  data() {
-    return {
-      downloadLink: null,
-    };
-  },
+  name: "download",
   props: {
     task: Object,
-    buttonText: {
-      type: String,
-      default: ""
+    applicantID: String,
+    isAdminView: {
+      default: false,
+      type: Boolean
     }
   },
-  created() {
-    const storageRef = firebase.storage().ref(this.task.fileUpload);
-    storageRef.getDownloadURL().then(res => {
-      this.downloadLink = res;
-    });
+  methods: {
+    /**
+     * Deletes the download URL for the file associated with the task and user
+     * Deletes the file from Firebase Storage
+     */
+    async deleteFile() {
+      try {
+        await firebase
+          .storage()
+          .ref(`${this.applicantID}/${this.task.name}`)
+          .delete();
+
+        await firebase
+          .firestore()
+          .collection("users")
+          .doc(this.applicantID)
+          .update({
+            fileUpload: firebase.firestore.FieldValue.delete(),
+          });
+        this.task.fileUpload = null;
+        this.$emit("deleted", this.task);
+      } catch (error) {
+        console.log(error);
+        this.$emit("delete-error", error.message);
+      }
+    },
   },
 };
 </script>
-<style>
- a {
-   text-decoration: none;
- }
-</style>
-
-
-
