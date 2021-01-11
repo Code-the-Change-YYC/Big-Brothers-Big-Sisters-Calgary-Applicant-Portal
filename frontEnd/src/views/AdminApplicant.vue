@@ -20,6 +20,23 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
+          <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+            class="ma-2"
+            dark
+            color="accent"
+            v-bind="attrs"
+            v-on="on"
+            :href="`mailto:${applicantEmail}`"
+            > 
+              <v-icon large color="white">
+                mdi-email
+              </v-icon>
+            </v-btn>
+            </template>
+            <span>{{applicantEmail}}</span>
+            </v-tooltip>
             <v-card-title>{{ applicantName }}</v-card-title>
             <v-spacer></v-spacer>
             <v-switch
@@ -37,8 +54,7 @@
               >
                 <template v-slot:activator="{on, attrs}">
                   <v-btn
-                    class="mx-2"
-                    fab
+                    class="ma-2"
                     dark
                     v-bind="attrs"
                     v-on="on"
@@ -73,11 +89,8 @@
                       Delete
                     </v-btn>
                   </v-card-actions>
-                  
                 </v-card>
               </v-dialog>
-
-
           </v-toolbar>
         </template>
         <template v-slot:item.status="{ item }">
@@ -145,6 +158,7 @@ export default {
       applicantID: "",
       adminID: "",
       applicantName: "",
+      applicantEmail: "",
       tasks: [],
       tasksToRender: [],
       switchLoading: false,
@@ -220,6 +234,7 @@ export default {
           this.snackbar = false;
         }, 5000);
       }
+      this.renderUser();
     },
   async renderUser() {
     let doc;
@@ -231,6 +246,7 @@ export default {
       this.displayNotification(err.message);
     }
     this.applicantName = doc.data.name;
+    this.applicantEmail = doc.data.email;
     this.isCommunityMentor = doc.data.isCommunityMentor;
     let servertasks = doc.data.tasks;
     this.tasks = [];
