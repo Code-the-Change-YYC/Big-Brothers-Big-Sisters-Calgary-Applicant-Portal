@@ -76,26 +76,6 @@
                   </v-btn>
                 </v-col>
               </v-row>
-              <!-- </v-col> -->
-              <!-- </v-row> -->
-              <v-col>
-                <v-btn
-                  color="accent"
-                  margin-bottom="1em"
-                  @click="auth('final@test.com', 'Abc1234$')"
-                >
-                  BYPASS AUTH AS APPLICANT (DEBUG ONLY)
-                </v-btn>
-              </v-col>
-              <v-col>
-                <v-btn
-                  color="accent"
-                  margin-bottom="1em"
-                  @click="auth('cole.t@abc.com', 'Abc1234$')"
-                >
-                  BYPASS AUTH AS ADMIN (DEBUG ONLY)
-                </v-btn>
-              </v-col>
             </v-col>
           </v-row>
         </v-container>

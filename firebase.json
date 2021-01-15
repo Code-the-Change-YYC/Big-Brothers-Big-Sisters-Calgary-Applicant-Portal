@@ -33,8 +33,5 @@
     "hosting": {
       "port": 5000
     }
-  },
-  "remoteconfig": {
-    "template": "remoteconfig.template.json"
   }
 }
