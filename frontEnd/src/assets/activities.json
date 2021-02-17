@@ -22,21 +22,21 @@
   },
   {
     "name": "BIG Supporters - Family/Partner",
-    "description": "This reference must have known your for a minimum of two years. Please provide significant other, if not applicable, please provide family member.",
+    "description": "This reference must have known you for a minimum of two years. Please provide significant other, if not applicable, please provide family member.",
     "dueDate": "Completed within a month of application",
     "status": "Incomplete",
     "upload": false
   },
   {
     "name": "BIG Supporters - Personal",
-    "description": "This reference must have known your for a minimum of two years.",
+    "description": "This reference must have known you for a minimum of two years.",
     "dueDate": "Completed within a month of application",
     "status": "Incomplete",
     "upload": false
   },
   {
     "name": "BIG Supporters - Employer",
-    "description": "This reference must have known your for a minimum of two years. Please provide your current employer, if this individual has known you less than two years, please be prepared to provide an additional reference.",
+    "description": "This reference must have known you for a minimum of two years. Please provide your current employer, if this individual has known you less than two years, please be prepared to provide an additional reference.",
     "dueDate": "Completed within a month of application",
     "status": "Incomplete",
     "upload": false
@@ -50,7 +50,7 @@
   },
   {
     "name": "BIG Checks - Police",
-    "description": "When you have received your results from the Calgary Police, please share the results throught the Calgary Police Website to BBBS!",
+    "description": "When you have received your results from the Calgary Police, please share the results through the Calgary Police Website to BBBS!",
     "dueDate": "As soon as possible",
     "status": "Incomplete",
     "upload": false
