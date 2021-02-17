@@ -78,7 +78,7 @@ exports.createUser = functions.https.onCall(async (data) => {
   let userInfo = data;
   userInfo.tasks = taskFactory.getDefaultTasks();
   userInfo.isAdmin = false;
-  userInfo.isCommunityMentor = false;
+  userInfo.isCommunityMentor = true;
   userInfo.requiresHomeAssessment = false;
   try {
     await sendNotificationByID(userInfo.id, "Congratulations on making your account!");
