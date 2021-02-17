@@ -33,6 +33,17 @@
               {{ item.description }}
             </p>
             <v-btn
+              v-if="item.name ===  'Mentoring 101'"
+              class="float-right ml-5 my-5"
+              href="http://moodle.albertamentors.ca"
+              target="_blank"
+              rounded
+              color="accent"
+              dark
+            >
+              Moodle
+            </v-btn>
+            <v-btn
               @click="changeStatus(item)"
               v-if="!noActions.includes(item.name)"
               class="float-right my-5"

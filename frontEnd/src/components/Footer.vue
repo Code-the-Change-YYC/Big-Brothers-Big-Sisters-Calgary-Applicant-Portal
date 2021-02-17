@@ -16,21 +16,13 @@
         v-for="(link, index) in links"
         :key=index
         :href="link.href"
+        target="_blank"
         text
         rounded
       >
         {{ link.text }}
       </v-btn>
     </v-row>
-    <!-- <v-col align="left">
-      <v-btn
-        text
-        class="text-wrap"
-        disabled
-      >
-        © 2020 - Big Brothers Big Sisters Calgary
-      </v-btn>
-    </v-col> -->
     </v-row>
   </v-footer>
 </template>
@@ -56,7 +48,7 @@
           href: 'https://bbbscalgary.ca/privacy-policy/'
         },
         {
-          text : 'Help',
+          text : 'Help Phone (403)-777-3534',
           href: 'tel: 403-777-3534'
         }
       ],
