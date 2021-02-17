@@ -48,7 +48,7 @@
           href: 'https://bbbscalgary.ca/privacy-policy/'
         },
         {
-          text : 'Help',
+          text : 'Help Phone (403)-777-3534',
           href: 'tel: 403-777-3534'
         }
       ],
