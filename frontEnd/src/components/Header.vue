@@ -186,7 +186,7 @@ import firebase from "firebase";
             } else if (this.user.isCommunityMentor === true) {
               this.type = "Community Mentor";
             } else {
-              this.type = "Education Mentor";
+              this.type = "In-School Mentor";
             }
             this.email = this.user.email;
             //get notifications for user
