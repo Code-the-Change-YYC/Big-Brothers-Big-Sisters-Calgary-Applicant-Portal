@@ -81,6 +81,12 @@
         </v-container>
       </form>
     </v-card>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        color="accent"
+      ></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -96,6 +102,7 @@ export default {
       password: "",
       passwordVisible: false,
       errormessage: "",
+      overlay: false,
     };
   },
   components: {
@@ -103,6 +110,7 @@ export default {
   },
   methods: {
     async auth(email, password) {
+      this.overlay = !this.overlay;
       let id;
       try {
         let user = await firebase
@@ -123,7 +131,7 @@ export default {
             this.$router.push(`applicant/${id}`)
           }
       } catch (err) {
-        this.errormessage = err;
+        this.errormessage = "The email or password is incorrect";
       }
     },
   },
