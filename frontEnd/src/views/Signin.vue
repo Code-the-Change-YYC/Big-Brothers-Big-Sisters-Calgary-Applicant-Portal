@@ -115,9 +115,14 @@ export default {
       try {
         let user = await firebase
           .auth()
-          .signInWithEmailAndPassword(email, password);
+          .signInWithEmailAndPassword(email, password)
+          .then()
+          .catch(() => {
+            this.overlay = !this.overlay;
+          })
         id = user.user.uid;
       } catch (err) {
+        this.overlay = !this.overlay;
         this.errormessage = "The email or password is incorrect";
       }
 
@@ -131,6 +136,7 @@ export default {
             this.$router.push(`applicant/${id}`)
           }
       } catch (err) {
+        this.overlay = !this.overlay;
         this.errormessage = "The email or password is incorrect";
       }
     },

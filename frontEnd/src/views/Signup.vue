@@ -101,6 +101,12 @@
         </v-container>
       </form>
     </v-card>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        color="accent"
+      ></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -120,6 +126,7 @@ export default {
         passwordVisible: false,
         isValid: true,
         errormessage: '',
+        overlay: false,
 
         emailrules: [ 
         v => 
@@ -151,6 +158,7 @@ export default {
         }
       },
       signUp(){
+        this.overlay = !this.overlay;
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then((user) => {
             let userInfo = {
@@ -162,9 +170,11 @@ export default {
             .then(() => {
             this.$router.push(`/`);
           }).catch(error =>{
+            this.overlay = !this.overlay;
             this.errormessage = error.message;
           })
         }).catch((error) => {
+          this.overlay = !this.overlay;
           this.errormessage = error.message;
         })
       },
