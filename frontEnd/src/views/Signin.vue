@@ -103,6 +103,7 @@ export default {
       passwordVisible: false,
       errormessage: "",
       overlay: false,
+      pressed: false,
     };
   },
   components: {
@@ -110,34 +111,38 @@ export default {
   },
   methods: {
     async auth(email, password) {
-      this.overlay = !this.overlay;
-      let id;
-      try {
-        let user = await firebase
-          .auth()
-          .signInWithEmailAndPassword(email, password)
-          .then()
-          .catch(() => {
-            this.overlay = !this.overlay;
-          })
-        id = user.user.uid;
-      } catch (err) {
+      if (!this.pressed) {
+        this.pressed = true;
         this.overlay = !this.overlay;
-        this.errormessage = "The email or password is incorrect";
-      }
+        let id;
+        try {
+          let user = await firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then()
+            .catch(() => {
+              this.overlay = !this.overlay;
+            })
+          id = user.user.uid;
+        } catch (err) {
+          this.overlay = !this.overlay;
+          this.errormessage = "The email or password is incorrect";
+        }
 
-      let doc;
-      try {
-        doc = await firebase.functions().httpsCallable("getUserByID")({ id });
-        let currentUser = doc.data;
-         if(currentUser.isAdmin) {
-            this.$router.push(`admin/home/${id}`)
-          }else if(!currentUser.isAdmin){
-            this.$router.push(`applicant/${id}`)
-          }
-      } catch (err) {
-        this.overlay = !this.overlay;
-        this.errormessage = "The email or password is incorrect";
+        let doc;
+        try {
+          doc = await firebase.functions().httpsCallable("getUserByID")({ id });
+          let currentUser = doc.data;
+          if(currentUser.isAdmin) {
+              this.$router.push(`admin/home/${id}`)
+            }else if(!currentUser.isAdmin){
+              this.$router.push(`applicant/${id}`)
+            }
+        } catch (err) {
+          this.overlay = !this.overlay;
+          this.errormessage = "The email or password is incorrect";
+        }
+        this.pressed = false;
       }
     },
   },
