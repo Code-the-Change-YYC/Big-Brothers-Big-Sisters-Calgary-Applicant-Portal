@@ -12,15 +12,15 @@
     "upload": false
   },
   "BIG Supporters - Family/Partner": {
-    "description": "This reference must have known your for a minimum of two years. Please provide significant other, if not applicable, please provide family member.",
+    "description": "This reference must have known you for a minimum of two years. Please provide significant other, if not applicable, please provide family member.",
     "upload": false
   },
   "BIG Supporters - Personal": {
-    "description": "This reference must have known your for a minimum of two years.",
+    "description": "This reference must have known you for a minimum of two years.",
     "upload": false
   },
   "BIG Supporters - Employer": {
-    "description": "This reference must have known your for a minimum of two years. Please provide your current employer, if this individual has known you less than two years, please be prepared to provide an additional reference.",
+    "description": "This reference must have known you for a minimum of two years. Please provide your current employer, if this individual has known you less than two years, please be prepared to provide an additional reference.",
     "upload": false
   },
   "BIG Fundamentals": {
@@ -28,7 +28,7 @@
     "upload": false
   },
   "BIG Checks - Police": {
-    "description": "When you have received your results from the Calgary Police, please share the results throught the Calgary Police Website to BBBS!",
+    "description": "When you have received your results from the Calgary Police, please share the results through the Calgary Police Website to BBBS!",
     "upload": false
   },
   "BIG Checks - RCMP Check": {
