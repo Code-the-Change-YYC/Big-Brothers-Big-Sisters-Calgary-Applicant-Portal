@@ -10,6 +10,7 @@
     "source": "functions"
   },
   "hosting": {
+    "site": "bbbs-vip-testers",
     "public": "frontEnd/dist",
     "ignore": [
       "firebase.json",
